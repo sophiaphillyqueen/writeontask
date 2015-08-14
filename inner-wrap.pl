@@ -14,6 +14,7 @@ my $hstart;
 my $filefound;
 my $dflwordstofull = 2000;
 my $wordstofull;
+my $wordsatorigin;
 
 #$bel = $hme . "/bin-res/morningroutine/snd/tibetan-bell.m4a";
 $bel = &argola::srcd;
@@ -87,6 +88,10 @@ sub opto__grc_do {
   $hstart = &argola::getrg;
 } &argola::setopt("-grc",\&opto__grc_do);
 
+sub opto__wtl_do {
+  $wordstofull = &argola::getrg;
+} &argola::setopt("-wtl",\&opto__wtl_do);
+
 
 
 
@@ -97,6 +102,7 @@ if ( $filefound < 5 ) { die "\nwriteontask: FATAL ERROR:\n    No file specified:
 $wordpcan = ( ( $wordspera * 5 ) / $secpera );
 
 $xpecbynow = &wcounti($filen);
+$wordsatorigin = $xpecbynow;
 $timstandr = &nowo; $imediat = $timstandr;
 if ( $hstart ne "" ) { $timstandr = int($timstandr + $hstart + 0.2); }
 
@@ -118,8 +124,8 @@ sub banjora {
   $wordsare = &wcounti($filen);
   
   system("echo");
-  system("echo","GOAL: " . $xpecbynow);
-  system("echo","HERE: " . $wordsare);
+  system("echo","GOAL: " . &oxorig($xpecbynow) . " " . $xpecbynow);
+  system("echo","HERE: " . &oxorig($wordsare) . " " . $wordsare);
   
   $lc_lefto = ( 2 > 1 );
   
@@ -143,7 +149,7 @@ sub banjora {
   {
     my $lc2_dif;
     $lc2_dif = ( $wordsare - $xpecbynow );
-    system("echo","ahead by: " . $lc2_dif);
+    system("echo","\n  ahead by: " . $lc2_dif);
     $lc_lefto = ( 1 > 2 );
   }
   
@@ -151,4 +157,22 @@ sub banjora {
   
   
   sleep(2);
+}
+
+sub oxorig {
+  my $lc_src;
+  my $lc_chr;
+  my $lc_ret;
+  my $lc_cnt;
+  $lc_src = int(($_[0] - $wordsatorigin) + 0.5);
+  $lc_ret = "";
+  $lc_cnt = 5;
+  while ( $lc_cnt > 0.5 )
+  {
+    $lc_src = "  " . $lc_src;
+    $lc_chr = chop($lc_src);
+    $lc_ret = $lc_chr . $lc_ret;
+    $lc_cnt = int($lc_cnt - 0.8);
+  }
+  return $lc_ret;
 }
