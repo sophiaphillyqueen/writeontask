@@ -1,8 +1,8 @@
 use argola;
 use strict;
 my $filen;
-my $wordspera;
-my $secpera;
+my $wordspera = 1;
+my $secpera = 9;
 my $wordpcan; # Words per five-second interval:
 my $xpecbynow; # Current Word Expectation:
 my $timstandr; # Time matching expectation:
@@ -10,11 +10,12 @@ my $imediat;
 my $bel;
 my $wordsare;
 my $loudness;
-my $hstart;
+my $hstart = 60; # Seconds for initial grace period
 my $filefound;
 my $dflwordstofull = 2000;
 my $wordstofull;
 my $wordsatorigin;
+my $rate_exp;
 
 #$bel = $hme . "/bin-res/morningroutine/snd/tibetan-bell.m4a";
 $bel = &argola::srcd;
@@ -52,21 +53,14 @@ sub dscrep {
   }
   #system("echo",$timstandr . " - " . $xpecbynow);
   
+  system("clear");
   
   return ( 2 > 1 );
 }
 
-#($wordspera,$secpera,$hstart,$filen) = @ARGV;
-# Let us now set up the defaults
-
-# One word every six seconds = default goal
-$wordspera = 1;
-$secpera = 6;
 
 $wordstofull = $dflwordstofull;
 
-# 20 seconds head-start by default
-$hstart = 30;
 
 # No default file, though:
 $filefound = 0;
@@ -99,6 +93,12 @@ sub opto__wtl_do {
 &argola::runopts;
 if ( $filefound < 5 ) { die "\nwriteontask: FATAL ERROR:\n    No file specified:\n\n"; }
 
+
+$rate_exp = $wordspera . " word";
+if ( $wordspera != 1 ) { $rate_exp .= "s"; }
+$rate_exp .= " every " . $secpera . " second";
+if ( $secpera != 1 ) { $rate_exp .= "s"; }
+
 $wordpcan = ( ( $wordspera * 5 ) / $secpera );
 
 $xpecbynow = &wcounti($filen);
@@ -109,6 +109,7 @@ if ( $hstart ne "" ) { $timstandr = int($timstandr + $hstart + 0.2); }
 while ( $imediat < $timstandr )
 {
   my $lc_dif;
+  system("clear");
   $lc_dif = int(($timstandr - $imediat) + 0.2);
   system("echo","\n" . $lc_dif . " second(s) remaining in the grace period.");
   &banjora;
@@ -123,6 +124,8 @@ sub banjora {
   
   $wordsare = &wcounti($filen);
   
+  system("echo");
+  system("echo","Target Rate: " . $rate_exp);
   system("echo");
   system("echo","GOAL: " . &oxorig($xpecbynow) . " " . $xpecbynow);
   system("echo","HERE: " . &oxorig($wordsare) . " " . $wordsare);
