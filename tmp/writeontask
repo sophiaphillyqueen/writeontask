@@ -1,9 +1,0 @@
-#! /usr/bin/perl
-use strict;
-my $resloc = "/Users/red_angel/gitter/rps/writeontask";
-# line 1 "/Users/red_angel/gitter/rps/writeontask/outer-wrap.qpl-then"
-
-my $versio = "2015-05-18-01";
-
-exec("perl","-I" . $resloc . "/plmod", $resloc . "/inner-wrap.pl",$versio,$resloc,@ARGV);
-
