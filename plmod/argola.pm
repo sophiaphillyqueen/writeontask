@@ -23,6 +23,10 @@ sub getrg {
   return $lc_ret;
 }
 
+sub remrg {
+  return @argbuft;
+}
+
 sub setopt {
   @optlist = ( @optlist, $_[0] );
   $opthash{$_[0]} = $_[1];
@@ -60,6 +64,7 @@ sub rset {
 sub vrsn {
   return $versono;
 }
+
 sub srcd {
   return $resorco;
 }
@@ -75,6 +80,38 @@ sub remo {
   @lc_tua = @argbuft;
   @argbuft = ();
   return @lc_tua;
+}
+
+sub wrparg_bsc {
+  my $lc_ret;
+  my $lc_src;
+  my $lc_chr;
+  $lc_src = scalar reverse $_[0];
+  $lc_ret = "\'";
+  while ( $lc_src ne "" )
+  {
+    $lc_chr = chop($lc_src);
+    if ( $lc_chr eq "\'" ) { $lc_chr = "\'\"\'\"\'"; }
+    $lc_ret .= $lc_chr;
+  }
+  $lc_ret .= "\'";
+  return $lc_ret;
+}
+
+sub wraprg_lst {
+  my $lc_ret;
+  my $lc_rem;
+  my @lc_ray;
+  @lc_ray = @_;
+  $lc_rem = @lc_ray;
+  if ( $lc_rem < 0.5 ) { return; }
+  $lc_ret = shift(@lc_ray); $lc_rem = @lc_ray;
+  while ( $lc_rem > 0.5 )
+  {
+    $lc_ret .= " " . &wrparg_bsc(shift(@lc_ray));
+    $lc_rem = @lc_ray;
+  }
+  $_[0] = $lc_ret;
 }
 
 
