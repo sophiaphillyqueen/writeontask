@@ -1,4 +1,5 @@
 use argola;
+use alarmica;
 use strict;
 my $filen;
 my $wordspera = 1;
@@ -8,7 +9,8 @@ my $xpecbynow; # Current Word Expectation:
 my $timstandr; # Time matching expectation:
 my $imediat;
 my $bel;
-my $wordsare;
+my $wordsare; # Current count of words:
+my $wordswere; # Previous count of words:
 my $loudness;
 my $hstart = 60; # Seconds for initial grace period
 my $filefound;
@@ -16,6 +18,19 @@ my $dflwordstofull = 2000;
 my $wordstofull;
 my $wordsatorigin;
 my $rate_exp;
+
+my $elaps_source; # The origin time against which all elapsation is measured:
+my $elaps_generi; # The current elapsation time:
+my $elaps_lstsav; # Elapsation as of last status change:
+my $elaps_lggrac; # Last elapsation while in good grace:
+my $elaps_lgsave; # Last status change while in good grace:
+my $is_grace; # Decabool tells us if we are in good grace:
+
+$elaps_source = &alarmica::nowo();
+$elaps_generi = $elaps_source;
+$elaps_lstsav = $elaps_source;
+$elaps_lggrac = $elaps_source;
+$elaps_lgsave = $elaps_source;
 
 #$bel = $hme . "/bin-res/morningroutine/snd/tibetan-bell.m4a";
 $bel = &argola::srcd;
@@ -37,15 +52,8 @@ sub wcounti {
   return $lc_rt;
 }
 
-sub nowo {
-  my $lc_a;
-  $lc_a = `date +%s`;
-  chomp($lc_a);
-  return $lc_a;
-}
-
 sub dscrep {
-  $imediat = &nowo;
+  $imediat = &alarmica::nowo();
   while ( $timstandr < $imediat )
   {
     $xpecbynow += $wordpcan;
@@ -101,9 +109,11 @@ if ( $secpera != 1 ) { $rate_exp .= "s"; }
 
 $wordpcan = ( ( $wordspera * 5 ) / $secpera );
 
-$xpecbynow = &wcounti($filen);
+$wordsare = &wcounti($filen);
+$xpecbynow = $wordsare;
+
 $wordsatorigin = $xpecbynow;
-$timstandr = &nowo; $imediat = $timstandr;
+$timstandr = &alarmica::nowo(); $imediat = $timstandr;
 if ( $hstart ne "" ) { $timstandr = int($timstandr + $hstart + 0.2); }
 
 while ( $imediat < $timstandr )
@@ -113,7 +123,7 @@ while ( $imediat < $timstandr )
   $lc_dif = int(($timstandr - $imediat) + 0.2);
   system("echo","\n" . $lc_dif . " second(s) remaining in the grace period.");
   &banjora;
-  $imediat = &nowo;
+  $imediat = &alarmica::nowo();
 }
 
 
@@ -121,8 +131,18 @@ while ( &dscrep ) { &banjora; }
 sub banjora {
   my $lc_cm;
   my $lc_lefto;
+  my $lc_slptarg;
   
+  $lc_slptarg = 2;
+  
+  # Now we get the next word count:
+  $wordswere = $wordsare;
   $wordsare = &wcounti($filen);
+  
+  # And we get the new generic elapsation:
+  $elaps_generi = &alarmica::nowo;
+  if ( $wordswere != $wordsare ) { $elaps_lstsav = $elaps_generi; }
+  $is_grace = 0;
   
   system("echo");
   system("echo","Target Rate: " . $rate_exp);
@@ -144,7 +164,7 @@ sub banjora {
     $lc_cm = "( " . $lc_cm . " ) 2> /dev/null";
     #system("echo",$lc_cm);
     system($lc_cm);
-    sleep(3);
+    $lc_slptarg = 5;
     $lc_lefto = ( 1 > 2 );
   }
   
@@ -154,13 +174,33 @@ sub banjora {
     $lc2_dif = ( $wordsare - $xpecbynow );
     system("echo","\n  ahead by: " . $lc2_dif);
     $lc_lefto = ( 1 > 2 );
+    $is_grace = 10;
   }
   
-  if ( $lc_lefto ) { system("echo","ON THE CUSP:"); }
+  if ( $lc_lefto ) { system("echo","ON THE CUSP:"); $is_grace = 10; }
   
   
-  sleep(2);
+  if ( $is_grace )
+  {
+    $elaps_lggrac = $elaps_generi;
+    if ( $wordswere != $wordsare ) { $elaps_lgsave = $elaps_generi; }
+  }
+  
+  
+  system("echo");
+  system("echo","                   Time Elapsed So Far: " . &parce_elaps($elaps_generi) . ":");
+  system("echo","              As of last status-change: " . &parce_elaps($elaps_lstsav) . ":");
+  system("echo","               Last time in good grace: " . &parce_elaps($elaps_lggrac) . ":");
+  system("echo","Last status-change while in good grace: " . &parce_elaps($elaps_lgsave) . ":");
+  
+  
+  sleep($lc_slptarg);
 }
+
+sub parce_elaps {
+  return &alarmica::parcesec(int(($_[0] - $elaps_source) + 0.2));
+}
+
 
 sub oxorig {
   my $lc_src;
