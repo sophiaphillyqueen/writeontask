@@ -145,6 +145,8 @@ sub banjora {
   $is_grace = 0;
   
   system("echo");
+  system("echo","Our File: " . $filen);
+  system("echo");
   system("echo","Target Rate: " . $rate_exp);
   system("echo");
   system("echo","GOAL: " . &oxorig($xpecbynow) . " " . $xpecbynow);
