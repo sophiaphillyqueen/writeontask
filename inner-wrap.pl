@@ -33,7 +33,7 @@ $elaps_lggrac = $elaps_source;
 $elaps_lgsave = $elaps_source;
 
 #$bel = $hme . "/bin-res/morningroutine/snd/tibetan-bell.m4a";
-$bel = &argola::srcd;
+$bel = &argola::srcd();
 $bel .= "/sounds/42095__fauxpress__bell-meditation.mp3";
 
 # http://stackoverflow.com/questions/3746947/get-just-the-integer-from-wc-in-bash
@@ -77,28 +77,28 @@ $filefound = 0;
 
 
 sub opto__f_do {
-  $filen = &argola::getrg;
+  $filen = &argola::getrg();
   $filefound = 10;
 } &argola::setopt("-f",\&opto__f_do);
 
 sub opto__rat_do {
-  $wordspera = &argola::getrg;
+  $wordspera = &argola::getrg();
   $secpera = &argola::getrg;
 } &argola::setopt("-rat",\&opto__rat_do);
 
 sub opto__grc_do {
-  $hstart = &argola::getrg;
+  $hstart = &argola::getrg();
 } &argola::setopt("-grc",\&opto__grc_do);
 
 sub opto__wtl_do {
-  $wordstofull = &argola::getrg;
+  $wordstofull = &argola::getrg();
 } &argola::setopt("-wtl",\&opto__wtl_do);
 
 
 
 
 
-&argola::runopts;
+&argola::runopts();
 if ( $filefound < 5 ) { die "\nwriteontask: FATAL ERROR:\n    No file specified:\n\n"; }
 
 
