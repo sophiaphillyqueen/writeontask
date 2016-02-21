@@ -25,14 +25,14 @@ Each option overrides any earlier option to it's contrary.
 Displays this help file \- and exits the program once
 you are finished reading it.
 .TP
-.BR \-f [\fIfile\fR]
+.BR \-f " " [\fIfile\fR]
 Sets the file that this program monitors for word-count.
 If this option appears more than once in the command-line, the last occurrence overrides all previous
 ones.
 However, if this option does not appear at \fIall\fR
 in the command line, that will cause a fatal error.
 .TP
-.BR \-grc [\fIsecs\fR\]
+.BR \-grc " " [\fIsecs\fR\]
 Changes the number of seconds in the grace period - the default being 60 seconds.
 The grace period is the amount of time after this
 program starts it's run that the expected word-count
@@ -41,12 +41,12 @@ word-count detected in the first scan of the file
 before the expected word-count starts \fIincreasing\fR
 according to whatever rate is specified.
 .TP
-.BR \-rat [\fIwords\fR] [\fIsecs\fR]
+.BR \-rat " " [\fIwords\fR] " " [\fIsecs\fR]
 Changes the rate at which the expected word-count will
 begin increasing once the grace period has expeired.
 The default is one word every nine seconds.
 .TP
-.BR \-wtl [\fIwordsbehind\fR]
+.BR \-wtl " " [\fIwordsbehind\fR]
 This option changes the rate at which the bell
 starts getting louder as you slip behind schedule
 in your writing.
