@@ -81,20 +81,22 @@ sub opto__f_do {
   $filefound = 10;
 } &argola::setopt("-f",\&opto__f_do);
 
-sub opto__rat_do {
-  $wordspera = &argola::getrg();
-  $secpera = &argola::getrg;
-} &argola::setopt("-rat",\&opto__rat_do);
-
 sub opto__grc_do {
   $hstart = &argola::getrg();
 } &argola::setopt("-grc",\&opto__grc_do);
+
+sub opto__rat_do {
+  $wordspera = &argola::getrg();
+  $secpera = &argola::getrg();
+} &argola::setopt("-rat",\&opto__rat_do);
 
 sub opto__wtl_do {
   $wordstofull = &argola::getrg();
 } &argola::setopt("-wtl",\&opto__wtl_do);
 
 
+
+&argola::help_opt('--help','help-file.nroff');
 
 
 

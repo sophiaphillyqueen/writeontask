@@ -1,0 +1,67 @@
+.TH WRITEONTASK 1
+.SH NAME
+writeontask \- keeps an author on\-task in a writing project based on word\-count progress
+.SH SYNOPSIS
+.B writeontask
+[\fIoptions\fR]
+.SH DESCRIPTION
+\fBwriteontask\fR keeps the author on\-task during a
+writing project by ringing of a bell when you are behind
+schedule as far as word\-count progress is concerned.
+The volume of this bell will be in proportion to far
+behind you are.
+
+\fBwriteontask\fR will keep doing it's thing until
+you interrupt it. Though the option for such behavior
+is expected to continue to be supported indefinitely
+into the future \- it may not always remain the only
+mode of this program's behavior, or even the default
+one.
+.SH OPTIONS
+The options are processed in the order that they appear on the command line.
+Each option overrides any earlier option to it's contrary.
+.TP
+.BR \-\-help
+Displays this help file \- and exits the program once
+you are finished reading it.
+.TP
+.BR \-f [\fIfile\fR]
+Sets the file that this program monitors for word-count.
+If this option appears more than once in the command-line, the last occurrence overrides all previous
+ones.
+However, if this option does not appear at \fIall\fR
+in the command line, that will cause a fatal error.
+.TP
+.BR \-grc [\fIsecs\fR\]
+Changes the number of seconds in the grace period - the default being 60 seconds.
+The grace period is the amount of time after this
+program starts it's run that the expected word-count
+of the document will remain the same as the initial
+word-count detected in the first scan of the file
+before the expected word-count starts \fIincreasing\fR
+according to whatever rate is specified.
+.TP
+.BR \-rat [\fIwords\fR] [\fIsecs\fR]
+Changes the rate at which the expected word-count will
+begin increasing once the grace period has expeired.
+The default is one word every nine seconds.
+.TP
+.BR \-wtl [\fIwordsbehind\fR]
+This option changes the rate at which the bell
+starts getting louder as you slip behind schedule
+in your writing.
+It does so by setting the number of words by which
+you need to be behind schedule for the bell to
+reach full volume.
+
+The default value
+is 2000 - which means that if this
+option does not change the
+default, the bell will ring
+at full volume whenever you are 2000 words or more
+behind schedule, at half-volume when you are 1000 words
+behind schedule, quarter-volume when you are 500
+words behind schedule,
+three-quarters volume when you are 1500 words behind
+schedule,
+and so-forth.
