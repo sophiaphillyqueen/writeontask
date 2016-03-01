@@ -33,7 +33,7 @@ $elaps_lggrac = $elaps_source;
 $elaps_lgsave = $elaps_source;
 
 #$bel = $hme . "/bin-res/morningroutine/snd/tibetan-bell.m4a";
-$bel = &argola::srcd();
+$bel = `chobakwrap -rloc`; chomp($bel);
 $bel .= "/sounds/42095__fauxpress__bell-meditation.mp3";
 
 # http://stackoverflow.com/questions/3746947/get-just-the-integer-from-wc-in-bash
