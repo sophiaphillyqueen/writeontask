@@ -17,6 +17,10 @@ is expected to continue to be supported indefinitely
 into the future \- it may not always remain the only
 mode of this program's behavior, or even the default
 one.
+
+And now, \fBwriteontask\fR will keep the machine from
+falling asleep while it does it's thing by means of
+cascading calls to \fBcaffeinate\fR.
 .SH OPTIONS
 The options are processed in the order that they appear on the command line.
 Each option overrides any earlier option to it's contrary.
@@ -46,6 +50,12 @@ Changes the rate at which the expected word-count will
 begin increasing once the grace period has expeired.
 The default is one word every nine seconds.
 .TP
+.BR \-scr
+When the system is kept awake, the display will be kept
+awake as well.
+(This is the default behavior of the program but can be
+overridden by the \fB\-xscr\fR option.)
+.TP
 .BR \-wtl " " [\fIwordsbehind\fR]
 This option changes the rate at which the bell
 starts getting louder as you slip behind schedule
@@ -53,6 +63,13 @@ in your writing.
 It does so by setting the number of words by which
 you need to be behind schedule for the bell to
 reach full volume.
+.TP
+.BR \-xscr
+The system will still be kept awake for the run of the command \-
+but the display will not.
+(The default behavior of this program keeps the display awake as well
+as the rest of the system. To restore the default behavior, use
+the \fB\-scr\fR option later in the command line.)
 
 The default value
 is 2000 - which means that if this

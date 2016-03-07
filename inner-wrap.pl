@@ -4,6 +4,7 @@ use strict;
 my $filen;
 my $wordspera = 1;
 my $secpera = 9;
+my $caff_mode = '-d';
 my $wordpcan; # Words per five-second interval:
 my $xpecbynow; # Current Word Expectation:
 my $timstandr; # Time matching expectation:
@@ -25,6 +26,8 @@ my $elaps_lstsav; # Elapsation as of last status change:
 my $elaps_lggrac; # Last elapsation while in good grace:
 my $elaps_lgsave; # Last status change while in good grace:
 my $is_grace; # Decabool tells us if we are in good grace:
+
+my $caff_cmdn;
 
 $elaps_source = &alarmica::nowo();
 $elaps_generi = $elaps_source;
@@ -94,6 +97,14 @@ sub opto__wtl_do {
   $wordstofull = &argola::getrg();
 } &argola::setopt("-wtl",\&opto__wtl_do);
 
+sub opto__scr_do {
+  $caff_mode = '-d';
+} &argola::setopt("-scr",\&opto__scr_do);
+
+sub opto__xscr_do {
+  $caff_mode = '-i';
+} &argola::setopt("-xscr",\&opto__xscr_do);
+
 
 
 &argola::help_opt('--help','help-file.nroff');
@@ -102,6 +113,16 @@ sub opto__wtl_do {
 
 &argola::runopts();
 if ( $filefound < 5 ) { die "\nwriteontask: FATAL ERROR:\n    No file specified:\n\n"; }
+
+
+
+
+# Assemble the Caffeination Command:
+$caff_cmdn = 'caffeinate ' . $caff_mode . ' -t 25';
+$caff_cmdn .= ' &bg';
+$caff_cmdn = '( ' . $caff_cmdn . ' ) > /dev/null 2> /dev/null';
+
+
 
 
 $rate_exp = $wordspera . " word";
@@ -198,6 +219,7 @@ sub banjora {
   system("echo","Last status-change while in good grace: " . &parce_elaps($elaps_lgsave) . ":");
   
   
+  system($caff_cmdn);
   sleep($lc_slptarg);
 }
 
