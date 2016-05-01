@@ -130,6 +130,17 @@ $caff_cmdn = '( ' . $caff_cmdn . ' ) > /dev/null 2> /dev/null';
 
 
 
+sub represecs {
+  my $lc_a;
+  my $lc_b;
+  
+  $lc_a = int($_[0] + 0.4);
+  $lc_b = &chobaktime::tsubdv($lc_a,60,2);
+  $lc_b = &chobaktime::tsubdv($lc_a,60,2) . ':' . $lc_b;
+  $lc_b = $lc_a . ':' . $lc_b;
+  return $lc_b;
+}
+
 
 $rate_exp = $wordspera . " word";
 if ( $wordspera != 1 ) { $rate_exp .= "s"; }
@@ -185,7 +196,7 @@ sub banjora {
   system("echo");
   system("echo","Our File: " . $filen);
   system("echo");
-  system("echo","Target Rate: " . $rate_exp);
+  system("echo","Target Rate: " . $rate_exp . ' (Original Grace period: ' . &represecs($hstart) . ')');
   system("echo");
   system("echo","GOAL: " . &oxorig($xpecbynow) . " " . $xpecbynow);
   system("echo","HERE: " . &oxorig($wordsare) . " " . $wordsare);
@@ -211,8 +222,12 @@ sub banjora {
   if ( $wordsare > $xpecbynow )
   {
     my $lc2_dif;
+    my $lc2_repres;
     $lc2_dif = ( $wordsare - $xpecbynow );
-    system("echo","\n  ahead by: " . $lc2_dif);
+    
+    $lc2_repres = represecs(($lc2_dif * $secpera) / $wordspera);
+    
+    system("echo","\n  ahead by: " . $lc2_dif . ' (' . $lc2_repres . ')');
     $lc_lefto = ( 1 > 2 );
     $is_grace = 10;
   }
