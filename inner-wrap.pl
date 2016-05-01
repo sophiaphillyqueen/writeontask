@@ -1,6 +1,7 @@
 use argola;
 use alarmica;
 use strict;
+use chobaktime;
 my $filen;
 my $wordspera = 1;
 my $secpera = 9;
@@ -88,6 +89,11 @@ sub opto__grc_do {
   $hstart = &argola::getrg();
 } &argola::setopt("-grc",\&opto__grc_do);
 
+sub opto__grcms_do {
+  $hstart = &argola::getrg();
+  $hstart = int( ( 60 * $hstart ) + &argola::getrg() + 0.2 );
+} &argola::setopt("-grcms",\&opto__grcms_do);
+
 sub opto__rat_do {
   $wordspera = &argola::getrg();
   $secpera = &argola::getrg();
@@ -142,9 +148,18 @@ if ( $hstart ne "" ) { $timstandr = int($timstandr + $hstart + 0.2); }
 while ( $imediat < $timstandr )
 {
   my $lc_dif;
+  my $lc_disp;
+  my $lc_dsa;
+  
   system("clear");
   $lc_dif = int(($timstandr - $imediat) + 0.2);
-  system("echo","\n" . $lc_dif . " second(s) remaining in the grace period.");
+  
+  $lc_dsa = $lc_dif;
+  $lc_disp = &chobaktime::tsubdv($lc_dsa,60,2);
+  $lc_disp = &chobaktime::tsubdv($lc_dsa,60,2) . ':' . $lc_disp;
+  $lc_disp = $lc_dsa . ':' . $lc_disp;
+  
+  system("echo","\n" . $lc_disp . " remaining in the grace period.");
   &banjora;
   $imediat = &alarmica::nowo();
 }
