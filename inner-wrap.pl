@@ -21,6 +21,7 @@ my $wordstofull;
 my $wordsatorigin;
 my $rate_exp;
 my $vibradurmax = 4000;
+my $vibra_hide = 10;
 
 my $elaps_source; # The origin time against which all elapsation is measured:
 my $elaps_generi; # The current elapsation time:
@@ -111,6 +112,10 @@ sub opto__scr_do {
 sub opto__xscr_do {
   $caff_mode = '-i';
 } &argola::setopt("-xscr",\&opto__xscr_do);
+
+sub opto__nbgv_do {
+  $vibra_hide = 0;
+} &argola::setopt('-nbgv',\&opto__nbgv_do);
 
 
 
@@ -225,7 +230,7 @@ sub banjora {
     $lc2_ld = int($loudness * 1000 * 100);
     if ( $lc2_ld > $vibradurmax ) { $lc2_ld = $vibradurmax; }
     $lc2_cm = 'chobakwrap-para-vibrate -msec ' . $lc2_ld;
-    $lc2_cm = '( ' . $lc2_cm . ' &bg ) > /dev/null 2> /dev/null';
+    if ( $vibra_hide > 5 ) { $lc2_cm = '( ' . $lc2_cm . ' &bg ) > /dev/null 2> /dev/null'; }
     system($lc2_cm);
   }
   
