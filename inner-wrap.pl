@@ -20,6 +20,7 @@ my $dflwordstofull = 2000;
 my $wordstofull;
 my $wordsatorigin;
 my $rate_exp;
+my $vibradurmax = 4000;
 
 my $elaps_source; # The origin time against which all elapsation is measured:
 my $elaps_generi; # The current elapsation time:
@@ -206,6 +207,8 @@ sub banjora {
   if ( $wordsare < $xpecbynow )
   {
     my $lc2_dif;
+    my $lc2_cm;
+    my $lc2_ld;
     $lc2_dif = ( $xpecbynow - $wordsare );
     $loudness = ( $lc2_dif / $wordstofull );
     if ( $loudness > 1 ) { $loudness = 1; } # Let's not go beyond 100% volume:
@@ -217,6 +220,13 @@ sub banjora {
     system($lc_cm);
     $lc_slptarg = 5;
     $lc_lefto = ( 1 > 2 );
+    
+    # And now --- for the good vibrations:
+    $lc2_ld = int($loudness * 1000 * 100);
+    if ( $lc2_ld > $vibradurmax ) { $lc2_ld = $vibradurmax; }
+    $lc2_cm = 'chobakwrap-para-vibrate -msec ' . $lc2_ld;
+    $lc2_cm = '( ' . $lc2_cm . ' &bg ) > /dev/null 2> /dev/null';
+    system($lc2_cm);
   }
   
   if ( $wordsare > $xpecbynow )
