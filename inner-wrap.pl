@@ -21,6 +21,7 @@ my $wordstofull;
 my $wordsatorigin;
 my $rate_exp;
 my $vibradurmax = 4000;
+my $vibradurati = ( 1000 * 100 );
 my $vibra_hide = 10;
 
 my $elaps_source; # The origin time against which all elapsation is measured:
@@ -104,6 +105,15 @@ sub opto__rat_do {
 sub opto__wtl_do {
   $wordstofull = &argola::getrg();
 } &argola::setopt("-wtl",\&opto__wtl_do);
+
+sub opto__vib_do {
+  $vibradurati = $vibradurmax;
+} &argola::setopt('-vib',\&opto__vib_do);
+
+sub opto__vwtl_do {
+  &opto_vib_do();
+  &opto_wtl_do();
+} &argola::setopt('-vwtl',\&opto__vwtl_do);
 
 sub opto__scr_do {
   $caff_mode = '-d';
@@ -227,8 +237,9 @@ sub banjora {
     $lc_lefto = ( 1 > 2 );
     
     # And now --- for the good vibrations:
-    $lc2_ld = int($loudness * 1000 * 100);
+    $lc2_ld = int($loudness * $vibradurati);
     if ( $lc2_ld > $vibradurmax ) { $lc2_ld = $vibradurmax; }
+    
     $lc2_cm = 'chobakwrap-para-vibrate -msec ' . $lc2_ld;
     if ( $vibra_hide > 5 ) { $lc2_cm = '( ' . $lc2_cm . ' &bg ) > /dev/null 2> /dev/null'; }
     system($lc2_cm);
