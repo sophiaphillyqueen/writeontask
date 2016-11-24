@@ -1,6 +1,7 @@
 use argola;
 use alarmica;
 use strict;
+use wraprg;
 use chobaktime;
 my $filen;
 my $wordspera = 1;
@@ -23,6 +24,7 @@ my $rate_exp;
 my $vibradurmax = 4000;
 my $vibradurati = ( 1000 * 100 );
 my $vibra_hide = 10;
+my @extops = ();
 
 my $elaps_source; # The origin time against which all elapsation is measured:
 my $elaps_generi; # The current elapsation time:
@@ -108,6 +110,7 @@ sub opto__wtl_do {
 
 sub opto__vib_do {
   $vibradurati = $vibradurmax;
+  @extops = (@extops,'-nomin');
 } &argola::setopt('-vib',\&opto__vib_do);
 
 sub opto__vwtl_do {
@@ -241,6 +244,7 @@ sub banjora {
     if ( $lc2_ld > $vibradurmax ) { $lc2_ld = $vibradurmax; }
     
     $lc2_cm = 'chobakwrap-para-vibrate -msec ' . $lc2_ld;
+    &wraprg::lst($lc2_cm,@extops);
     if ( $vibra_hide > 5 ) { $lc2_cm = '( ' . $lc2_cm . ' &bg ) > /dev/null 2> /dev/null'; }
     system($lc2_cm);
   }
