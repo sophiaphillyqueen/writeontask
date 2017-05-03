@@ -3,6 +3,7 @@ use alarmica;
 use strict;
 use wraprg;
 use chobaktime;
+use Scalar::Util qw(looks_like_number);
 my $filen;
 my $wordspera = 1;
 my $secpera = 9;
@@ -24,6 +25,7 @@ my $rate_exp;
 my $vibradurmax = 4000;
 my $vibradurati = ( 1000 * 100 );
 my $vibra_hide = 10;
+my $start_ahead = 'x';
 my @extops = ();
 
 my $elaps_source; # The origin time against which all elapsation is measured:
@@ -130,6 +132,16 @@ sub opto__nbgv_do {
   $vibra_hide = 0;
 } &argola::setopt('-nbgv',\&opto__nbgv_do);
 
+sub opto__sah_do {
+  my $lc_argo;
+  $lc_argo = &argola::getrg();
+  if ( !(looks_like_number($lc_argo)) )
+  {
+    die "\nwriteontask: FATAL ERROR: -sah must be followed by a number as it's argument.\n\n";
+  }
+  $start_ahead = $lc_argo;
+} &argola::setopt('-sah',\&opto__sah_do);
+
 
 
 &argola::help_opt('--help','help-file.nroff');
@@ -170,6 +182,14 @@ $wordpcan = ( ( $wordspera * 5 ) / $secpera );
 
 $wordsare = &wcounti($filen);
 $xpecbynow = $wordsare;
+if ( $start_ahead ne 'x' )
+{
+  $xpecbynow = 0;
+  if ( $wordsare > $start_ahead )
+  {
+    $xpecbynow = int(($wordsare - $start_ahead) + 0.2);
+  }
+}
 
 $wordsatorigin = $xpecbynow;
 $timstandr = &alarmica::nowo(); $imediat = $timstandr;

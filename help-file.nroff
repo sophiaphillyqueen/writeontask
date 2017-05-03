@@ -57,6 +57,11 @@ Changes the rate at which the expected word-count will
 begin increasing once the grace period has expeired.
 The default is one word every nine seconds.
 .TP
+.BR \-sah " " [\fIxnum\fR]
+You start out ahead of your writing goal by either
+\fIxnum\fR words or by the total number of words in
+the file so-far (whichever of the two is lesser).
+.TP
 .BR \-scr
 When the system is kept awake, the display will be kept
 awake as well.
