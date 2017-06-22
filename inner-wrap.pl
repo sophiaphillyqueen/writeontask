@@ -252,8 +252,14 @@ sub banjora {
     if ( $loudness > 1 ) { $loudness = 1; } # Let's not go beyond 100% volume:
     system("echo","\nBEHIND BY: " . $lc2_dif);
     system("echo","\nBell volume: " . $loudness);
-    $lc_cm = "afplay -v $loudness $bel &bg";
-    $lc_cm = "( " . $lc_cm . " ) 2> /dev/null";
+    #$lc_cm = "afplay -v $loudness $bel";
+
+    $lc_cm = "chobakwrap-sound -vol $loudness -snd $bel";
+
+    $lc_cm .= " &bg";
+    $lc_cm = "( " . $lc_cm . " ) > /dev/null 2> /dev/null";
+    #$lc_cm = "echo " . $lc_cm;
+
     #system("echo",$lc_cm);
     system($lc_cm);
     $lc_slptarg = 5;
