@@ -68,6 +68,18 @@ awake as well.
 (This is the default behavior of the program but can be
 overridden by the \fB\-xscr\fR option.)
 .TP
+.BR \-shcm " " [\fIcommand\fR]
+Execute this shell command before each time the file word-count
+is checked.
+The one argument to this option will be parsed each time as an
+entire shell command.
+
+This can be useful if you're tracking the aggregate content of
+a number of files rather than one file. The shell command can
+concatenate all these files into a temporary file -- and that
+temporary file can be the one that this program directly checks
+the word-count on.s
+.TP
 .BR \-wtl " " [\fIwordsbehind\fR]
 This option changes the rate at which the bell
 starts getting louder as you slip behind schedule

@@ -27,6 +27,7 @@ my $vibradurati = ( 1000 * 100 );
 my $vibra_hide = 10;
 my $start_ahead = 'x';
 my @extops = ();
+my @shcmx = ();
 
 my $elaps_source; # The origin time against which all elapsation is measured:
 my $elaps_generi; # The current elapsation time:
@@ -106,6 +107,10 @@ sub opto__rat_do {
   $secpera = &argola::getrg();
 } &argola::setopt("-rat",\&opto__rat_do);
 
+sub otpo__shcm_do {
+  @shcmx = (@shcmx,&argola::getrg());
+} &argola::setopt("-shcm",\&otpo__shcm_do);
+
 sub opto__wtl_do {
   $wordstofull = &argola::getrg();
 } &argola::setopt("-wtl",\&opto__wtl_do);
@@ -160,6 +165,12 @@ $caff_cmdn .= ' &bg';
 $caff_cmdn = '( ' . $caff_cmdn . ' ) > /dev/null 2> /dev/null';
 
 
+sub act_on_shcm {
+  my $lc_a;
+  foreach $lc_a (@shcmx) { system($lc_a); }
+}
+
+
 
 sub represecs {
   my $lc_a;
@@ -180,6 +191,7 @@ if ( $secpera != 1 ) { $rate_exp .= "s"; }
 
 $wordpcan = ( ( $wordspera * 5 ) / $secpera );
 
+&act_on_shcm();
 $wordsare = &wcounti($filen);
 $xpecbynow = $wordsare;
 if ( $start_ahead ne 'x' )
@@ -225,6 +237,7 @@ sub banjora {
   
   # Now we get the next word count:
   $wordswere = $wordsare;
+  &act_on_shcm();
   $wordsare = &wcounti($filen);
   
   # And we get the new generic elapsation:
