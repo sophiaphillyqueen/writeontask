@@ -188,7 +188,7 @@ sub asm_file_list_now {
   @filelact = @filelraw;
 
   $max_filename = 0;
-  foreach $lc_each_file (@fileact)
+  foreach $lc_each_file (@filelact)
   {
     &addtorep($lc_each_file,'x');
   }
