@@ -184,7 +184,15 @@ if ( $filefound < 5 ) { die "\nwriteontask: FATAL ERROR:\n    No file specified:
 # again in the future)
 &asm_file_list_now();
 sub asm_file_list_now {
+  my $lc_each_file;
   @filelact = @filelraw;
+
+  $max_filename = 0;
+  foreach $lc_each_file (@fileact)
+  {
+    &addtorep($lc_each_file,'x');
+  }
+
   $lastfileasm = time();
 }
 
