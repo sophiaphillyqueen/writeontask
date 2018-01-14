@@ -4,7 +4,27 @@ use strict;
 use wraprg;
 use chobaktime;
 use Scalar::Util qw(looks_like_number);
-my $filen;
+
+
+# Old variable for storing the one-file (from the days of the one-file)
+#my $filen;
+
+# The list of explicitly named files
+my @filelraw = ();
+
+# The full list of files
+my @filelact = ();
+
+# Record of when the list of files was last assembled
+my $lastfileasm;
+
+# Printed report of file contents:
+my $filecrep;
+
+# Size of longest recorded filename:
+my $max_filename;
+
+
 my $wordspera = 1;
 my $secpera = 9;
 my $caff_mode = '-d';
@@ -89,7 +109,9 @@ $filefound = 0;
 
 
 sub opto__f_do {
-  $filen = &argola::getrg();
+  my $lc_arg;
+  $lc_arg = &argola::getrg();
+  @filelraw = (@filelraw,$lc_arg);
   $filefound = 10;
 } &argola::setopt("-f",\&opto__f_do);
 
@@ -158,6 +180,49 @@ if ( $filefound < 5 ) { die "\nwriteontask: FATAL ERROR:\n    No file specified:
 
 
 
+# Assemble the Initial List of Files (and leave instructions for doing this
+# again in the future)
+&asm_file_list_now();
+sub asm_file_list_now {
+  @filelact = @filelraw;
+  $lastfileasm = time();
+}
+
+sub omnicountw {
+  my $lc_tot; # Total Word Count
+  my $lc_file; # Each file
+  my $lc_fsiz; # Individual file size
+
+  if ( ( time() - $lastfileasm ) > 120 ) { &asm_file_list_now(); }
+
+  $lc_tot = 0;
+  $filecrep = '';
+  foreach $lc_file (@filelact)
+  {
+    $lc_fsiz = &wcounti($lc_file);
+    $lc_tot = int($lc_tot + $lc_fsiz + 0.2);
+    &addtorep($lc_file,$lc_fsiz);
+  }
+  #&addtorep('TOTAL',$lc_tot);
+  chomp($filecrep);
+  return $lc_tot;
+}
+
+sub addtorep {
+  my $lc_strl;
+  my $lc_line;
+  $lc_line = '';
+  $lc_strl = length($_[0]);
+  while ( $lc_strl < ( $max_filename - 0.5 ) )
+  {
+    $lc_line .= ' ';
+    $lc_strl = int($lc_strl + 1.2);
+  }
+  if ( $lc_strl > $max_filename ) { $max_filename = $lc_strl; }
+  $filecrep .= $lc_line . $_[0] . ': ' . $_[1] . "\n";
+}
+
+
 
 # Assemble the Caffeination Command:
 $caff_cmdn = 'caffeinate ' . $caff_mode . ' -t 25';
@@ -192,7 +257,7 @@ if ( $secpera != 1 ) { $rate_exp .= "s"; }
 $wordpcan = ( ( $wordspera * 5 ) / $secpera );
 
 &act_on_shcm();
-$wordsare = &wcounti($filen);
+$wordsare = &omnicountw();
 $xpecbynow = $wordsare;
 if ( $start_ahead ne 'x' )
 {
@@ -238,15 +303,14 @@ sub banjora {
   # Now we get the next word count:
   $wordswere = $wordsare;
   &act_on_shcm();
-  $wordsare = &wcounti($filen);
+  $wordsare = &omnicountw();
   
   # And we get the new generic elapsation:
   $elaps_generi = &alarmica::nowo;
   if ( $wordswere != $wordsare ) { $elaps_lstsav = $elaps_generi; }
   $is_grace = 0;
   
-  system("echo");
-  system("echo","Our File: " . $filen);
+  system("echo",("\n". $filecrep));
   system("echo");
   system("echo","Target Rate: " . $rate_exp . ' (Original Grace period: ' . &represecs($hstart) . ')');
   system("echo");
