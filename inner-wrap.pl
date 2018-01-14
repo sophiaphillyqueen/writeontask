@@ -12,6 +12,9 @@ use Scalar::Util qw(looks_like_number);
 # The list of explicitly named files
 my @filelraw = ();
 
+# List of wild-cardable filenames
+my @filelwil = ();
+
 # The full list of files
 my @filelact = ();
 
@@ -133,6 +136,13 @@ sub otpo__shcm_do {
   @shcmx = (@shcmx,&argola::getrg());
 } &argola::setopt("-shcm",\&otpo__shcm_do);
 
+sub opto__wcf_do {
+  my $lc_arg;
+  $lc_arg = &argola::getrg();
+  @filelwil = (@filelwil,$lc_arg);
+  $filefound = 10;
+} &argola::setopt("-wcf",\&opto__wcf_do);
+
 sub opto__wtl_do {
   $wordstofull = &argola::getrg();
 } &argola::setopt("-wtl",\&opto__wtl_do);
@@ -185,7 +195,23 @@ if ( $filefound < 5 ) { die "\nwriteontask: FATAL ERROR:\n    No file specified:
 &asm_file_list_now();
 sub asm_file_list_now {
   my $lc_each_file;
+  my $lc_each_wild;
+  my $lc_raw;
+  my @lc_seg;
+
+  # First - we add the explicitly named files
   @filelact = @filelraw;
+
+  # Now we process the wild-cardy files
+  foreach $lc_each_wild (@filelwil)
+  {
+    $lc_raw = `ls -1d $lc_each_wild`;
+    @lc_seg = split(/\n/,$lc_raw);
+    foreach $lc_each_file (@lc_seg)
+    {
+      if ( $lc_each_file ne '' ) { @filelact = (@filelact,$lc_each_file); }
+    }
+  }
 
   $max_filename = 0;
   foreach $lc_each_file (@filelact)
