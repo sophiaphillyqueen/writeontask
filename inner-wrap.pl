@@ -27,6 +27,10 @@ my $filecrep;
 # Size of longest recorded filename:
 my $max_filename;
 
+my $span_allow_now = 120;
+my $span_allow_ahead = 120;
+my $span_allow_behind = 20;
+
 
 my $wordspera = 1;
 my $secpera = 9;
@@ -227,7 +231,7 @@ sub omnicountw {
   my $lc_file; # Each file
   my $lc_fsiz; # Individual file size
 
-  if ( ( time() - $lastfileasm ) > 120 ) { &asm_file_list_now(); }
+  if ( ( time() - $lastfileasm ) > $span_allow_now ) { &asm_file_list_now(); }
 
   $lc_tot = 0;
   $filecrep = '';
@@ -353,6 +357,7 @@ sub banjora {
   
   $lc_lefto = ( 2 > 1 );
   
+  $span_allow_now = $span_allow_ahead;
   if ( $wordsare < $xpecbynow )
   {
     my $lc2_dif;
@@ -361,6 +366,7 @@ sub banjora {
     $lc2_dif = ( $xpecbynow - $wordsare );
     $loudness = ( $lc2_dif / $wordstofull );
     if ( $loudness > 1 ) { $loudness = 1; } # Let's not go beyond 100% volume:
+    $span_allow_now = $span_allow_behind;
     system("echo","\nBEHIND BY: " . $lc2_dif);
     system("echo","\nBell volume: " . $loudness);
     #$lc_cm = "afplay -v $loudness $bel";
