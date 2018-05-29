@@ -78,7 +78,24 @@ This can be useful if you're tracking the aggregate content of
 a number of files rather than one file. The shell command can
 concatenate all these files into a temporary file -- and that
 temporary file can be the one that this program directly checks
-the word-count on.s
+the word-count on.
+This was the best way of doing that until the \fB-wcf\fB
+option was introduced.
+.TP
+.BR \-wcf " " [\fIfilestring\fR]
+Every so often (at least every few minutes, less than that
+when you are behind schedule) the program will determine
+what list of files the string \fIfilestring\fR would render
+to when included in a shell command.
+From then until the next such calculation, those files will
+be included in the list of files that are included in the
+word count.
+
+Remember that the \fIfilestring\fR argument must be
+shell-encoded twice if you invoke this command from the shell
+\- once to be processed by the shell at the time that
+\fBwriteontask\fR is invoked - and once to be processed
+each time \fBwriteontask\fR updates its list of files to track.
 .TP
 .BR \-wtl " " [\fIwordsbehind\fR]
 This option changes the rate at which the bell
