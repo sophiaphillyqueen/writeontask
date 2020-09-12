@@ -31,6 +31,11 @@ my $span_allow_now = 120;
 my $span_allow_ahead = 120;
 my $span_allow_behind = 20;
 
+# Basic variables for mid-game changes:
+my $midg_flag = 0;
+my $midg_base; # Base of filename (including pathname) of mid-game files
+my $midg_smap; # Semaphoric file
+
 
 my $wordspera = 1;
 my $secpera = 9;
@@ -121,6 +126,12 @@ sub opto__f_do {
   @filelraw = (@filelraw,$lc_arg);
   $filefound = 10;
 } &argola::setopt("-f",\&opto__f_do);
+
+sub opto__midg_do {
+  $midg_base = &argola::getrg();
+  $midg_flag = 10;
+  $midg_smap = $midg_base . '.flag';
+} &argola::setopt("-midg",\&opto__midg_do);
 
 sub opto__grc_do {
   $hstart = &argola::getrg();
@@ -287,46 +298,58 @@ sub represecs {
 }
 
 
-$rate_exp = $wordspera . " word";
-if ( $wordspera != 1 ) { $rate_exp .= "s"; }
-$rate_exp .= " every " . $secpera . " second";
-if ( $secpera != 1 ) { $rate_exp .= "s"; }
 
-$wordpcan = ( ( $wordspera * 5 ) / $secpera );
+
 
 &act_on_shcm();
 $wordsare = &omnicountw();
-$xpecbynow = $wordsare;
-if ( $start_ahead ne 'x' )
-{
-  $xpecbynow = 0;
-  if ( $wordsare > $start_ahead )
+&original_rate_setup();
+sub original_rate_setup {
+  $rate_exp = $wordspera . " word";
+  if ( $wordspera != 1 ) { $rate_exp .= "s"; }
+  $rate_exp .= " every " . $secpera . " second";
+  if ( $secpera != 1 ) { $rate_exp .= "s"; }
+  
+  $wordpcan = ( ( $wordspera * 5 ) / $secpera );
+  
+  #&act_on_shcm();
+  #$wordsare = &omnicountw();
+  $xpecbynow = $wordsare;
+  if ( $start_ahead ne 'x' )
   {
-    $xpecbynow = int(($wordsare - $start_ahead) + 0.2);
+    $xpecbynow = 0;
+    if ( $wordsare > $start_ahead )
+    {
+      $xpecbynow = ($wordsare - $start_ahead);
+    }
   }
 }
 
-$wordsatorigin = $xpecbynow;
-$timstandr = &alarmica::nowo(); $imediat = $timstandr;
-if ( $hstart ne "" ) { $timstandr = int($timstandr + $hstart + 0.2); }
-
-while ( $imediat < $timstandr )
-{
-  my $lc_dif;
-  my $lc_disp;
-  my $lc_dsa;
+&give_some_grace();
+sub give_some_grace
+{  
+  $wordsatorigin = $xpecbynow;
+  $timstandr = &alarmica::nowo(); $imediat = $timstandr;
+  if ( $hstart ne "" ) { $timstandr = int($timstandr + $hstart + 0.2); }
   
-  system("clear");
-  $lc_dif = int(($timstandr - $imediat) + 0.2);
-  
-  $lc_dsa = $lc_dif;
-  $lc_disp = &chobaktime::tsubdv($lc_dsa,60,2);
-  $lc_disp = &chobaktime::tsubdv($lc_dsa,60,2) . ':' . $lc_disp;
-  $lc_disp = $lc_dsa . ':' . $lc_disp;
-  
-  system("echo","\n" . $lc_disp . " remaining in the grace period.");
-  &banjora;
-  $imediat = &alarmica::nowo();
+  while ( $imediat < $timstandr )
+  {
+    my $lc_dif;
+    my $lc_disp;
+    my $lc_dsa;
+    
+    system("clear");
+    $lc_dif = int(($timstandr - $imediat) + 0.2);
+    
+    $lc_dsa = $lc_dif;
+    $lc_disp = &chobaktime::tsubdv($lc_dsa,60,2);
+    $lc_disp = &chobaktime::tsubdv($lc_dsa,60,2) . ':' . $lc_disp;
+    $lc_disp = $lc_dsa . ':' . $lc_disp;
+    
+    system("echo","\n" . $lc_disp . " remaining in the grace period.");
+    &banjora;
+    $imediat = &alarmica::nowo();
+  }
 }
 
 
@@ -424,6 +447,43 @@ sub banjora {
   
   system($caff_cmdn);
   sleep($lc_slptarg);
+  
+  &midg_test_aa();
+}
+
+sub midg_test_aa {
+  my $lc_cm;
+  my $lc_infa;
+  my @lc_infb;
+  my $lc_infc;
+
+  if ( $midg_flag < 5 ) { return; }
+  if ( ! ( -f $midg_smap ) ) { return; }
+  
+  print "\n\nMID-GAME PARAMETER UPDATE:\n"; sleep(2);
+  $lc_cm = 'cat ' . &wraprg::bsc(($midg_base . '.info'));
+  $lc_infa = `$lc_cm`;
+  @lc_infb = split(/\n/,$lc_infa);
+  system("rm","-rf",($midg_base . '.info'));
+  system("rm","-rf",$midg_smap);
+  foreach $lc_infc (@lc_infb)
+  {
+    &midg_test_ab($lc_infc);
+  }
+}
+
+sub midg_test_ab {
+  my @lc_srca;
+  
+  @lc_srca = split(quotemeta(':'),$_[0]);
+  if ( $lc_srca[0] eq 'rat' )
+  {
+    $wordspera = $lc_srca[1];
+    $secpera = $lc_srca[2];
+    $start_ahead = ($wordsare - $xpecbynow);
+    &original_rate_setup();
+    return;
+  }
 }
 
 sub parce_elaps {
