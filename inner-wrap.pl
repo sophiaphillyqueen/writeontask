@@ -484,6 +484,26 @@ sub midg_test_ab {
     &original_rate_setup();
     return;
   }
+  
+  if ( $lc_srca[0] eq 'adv' )
+  {
+    $start_ahead = (($wordsare - $xpecbynow) + $lc_srca[1]);
+    &original_rate_setup();
+    return;
+  }
+  
+  if ( $lc_srca[0] eq 'grc' )
+  {
+    $hstart = $lc_srca[1];
+    &give_some_grace();
+    return;
+  }
+  
+  if ( $lc_srca[0] eq 'end' )
+  {
+    exit(0);
+    return;
+  }
 }
 
 sub parce_elaps {
